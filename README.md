@@ -1,3 +1,7 @@
+# Narrowing
+
+- [Type-predicate](#type-predicate)
+
 # Objects
 
 - [Generic object types](#generic-object-types)
@@ -12,6 +16,57 @@
 - [Template literal types](#template-literal-types)
 - [Indexed access types](#indexed-access-types)
 - [Typeof type operator](#typeof-type-operator)
+
+## Type predicate
+
+```ts
+interface Visitor {
+  id: string;
+}
+
+interface Subscriber extends Visitor {
+  annualMembership: boolean;
+  trial: boolean;
+}
+
+interface Guest extends Visitor {
+  firstVisit: boolean;
+}
+
+let subscriber: Subscriber = {
+  id: "1",
+  annualMembership: true,
+  trial: false,
+};
+
+let guest: Guest = {
+  id: "2",
+  firstVisit: false,
+};
+
+const isSubscriber = (value: Visitor): value is Subscriber => {
+  return (value as Subscriber).annualMembership !== undefined;
+};
+
+const isGuest = (value: Visitor): value is Guest => {
+  return (value as Guest).id !== undefined;
+};
+
+const getUserType = () => {
+  if (isSubscriber(subscriber)) {
+    return (
+      "Annual membership " +
+      subscriber.annualMembership +
+      "Trial expired: " +
+      subscriber.trial
+    );
+  }
+
+  if (isGuest(guest)) {
+    "Guest Id: " + console.log(guest.id);
+  }
+};
+```
 
 ## Generic object types
 
