@@ -3,6 +3,7 @@
 - [Type-predicate](#type-predicate)
 - [Generic object types](#generic-object-types)
 - [Utility types](#utility-types)
+- [Enums](#enums)
 
 # Type manipulation
 
@@ -190,7 +191,7 @@ const post: PostSummary = {
 };
 ```
 
-### `Omit<Type, Keys>
+### Omit<Type, Keys>
 
 ```ts
 type PostId = Omit<Post, "createdBy" | "lastUpdated" | "title">;
@@ -244,6 +245,58 @@ interface User {
 
 type U = ReturnType<<T extends User, User extends Array<string>>() => T>;
 // type U = string[]
+```
+
+## Enums
+
+### Numeric enums
+
+```ts
+enum HeavyweightBoxers {
+  "Mike Tyson" = 1,
+  "Evander Holyfield", // 2
+  "George Foreman", // 3
+  "Lennox Lewis", // 4
+}
+
+enum MexicanBoxers {
+  "Jaime Munguia", // 0
+  "Oscar de la Hoya", // 1
+  "Julio Cesar Chavez", // 2
+}
+
+enum Membership {
+  Annual, // 0
+  Monthly, // 1
+  Trial, // 2
+}
+```
+
+### String enums
+
+```ts
+enum State {
+  pending = "PENDING",
+  cancelled = "CANCELLED",
+  fulfilled = "FULFILLED",
+  failed = "FAILED",
+}
+
+console.log(State.cancelled); // "CANCELLED"
+```
+
+### Computed and constant members
+
+```ts
+enum FileAccess {
+  // constant members
+  None,
+  Read = 1 << 1,
+  Write = 1 << 2,
+  ReadWrite = Read | Write,
+  // computed member
+  G = "123".length,
+}
 ```
 
 ## Generic type variables
