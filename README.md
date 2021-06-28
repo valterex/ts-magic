@@ -1,10 +1,8 @@
-# Narrowing
+# Misc
 
 - [Type-predicate](#type-predicate)
-
-# Objects
-
 - [Generic object types](#generic-object-types)
+- [Utility types](#utility-types)
 
 # Type manipulation
 
@@ -99,6 +97,153 @@ type OneOrManyOrNull<Type> = OrNull<OneOrMany<Type>>;
 
 type OneOrManyOrNullStrings = OneOrManyOrNull<string>;
 // type OneOrManyOrNullStrings = OneOrMany<string> | null;
+```
+
+## Utility types
+
+### `Partial<Type>`
+
+```ts
+interface Planet {
+  meanDiameter: number;
+  earthVolume: number;
+}
+
+const updatePlanet = (
+  planet: Planet,
+  physicalCharacteristics: Partial<Planet>
+) => {
+  return { ...planet, ...physicalCharacteristics };
+};
+
+const mercury = {
+  meanDiameter: 4880,
+  earthVolume: 0.055,
+};
+
+const updatedMercury = updatePlanet(mercury, { meanDiameter: 4890 });
+```
+
+### `Required<Type>`
+
+```ts
+interface Mammal {
+  kingdom?: string;
+  phylum?: string;
+}
+
+const mammal: Required<Mammal> = { kingdom: "Animalia" };
+// Property 'phylum' is missing in type '{ kingdom: string; }' but required in type 'Required<Mammal>'.ts(2741)
+```
+
+### `Readonly<Type>`
+
+```ts
+interface Position {
+  x: number;
+  y: number;
+}
+
+const immutableLocation: Readonly<Position> = {
+  x: 0,
+  y: 0,
+};
+
+immutableLocation.x = 1;
+// Cannot assign to 'x' because it is a read-only property.ts(2540)
+```
+
+### `Record<Keys, Type>`
+
+```ts
+interface Boxer {
+  active: boolean;
+  stance?: "orthodox" | "southpaw";
+}
+
+type Name = "Mike Tyson" | "Micky Ward" | "Vasiliy Lomachenko";
+
+const boxers: Record<Name, Boxer> = {
+  "Mike Tyson": { active: false },
+  "Vasiliy Lomachenko": { active: true, stance: "southpaw" },
+  "Micky Ward": {
+    active: false,
+  },
+};
+```
+
+### `Pick<Type, Keys>`
+
+```ts
+interface Post {
+  id: string;
+  createdBy: string;
+  lastUpdated: string | null;
+  title: string;
+}
+
+type PostSummary = Pick<Post, "id" | "title">;
+
+const post: PostSummary = {
+  id: "1",
+  title: "Lorem ipsum",
+};
+```
+
+### `Omit<Type, Keys>
+
+```ts
+type PostId = Omit<Post, "createdBy" | "lastUpdated" | "title">;
+
+// *** Exclude<Type, ExcludedUnion>
+type Middleweight = Exclude<
+  "Mike Tyson" | "Gennady Golovkin" | "Jermall Charlo",
+  "Mike Tyson"
+>;
+// type MiddleWeights = "Gennady Golovkin" | "Jermall Charlo"
+
+type Heavyweight = Exclude<"Mike Tyson", "Gennady Golovkin" | "Jermall Charlo">;
+// type Heavyweight = "Mike Tyson"
+
+type FunctionOnly = Exclude<
+  string | number | (() => Promise<void>),
+  string | number
+>;
+```
+
+### `Extract<Type, Union>`
+
+```ts
+type Falafel = Extract<"hummus" | "bread", "bread" | "cheese">;
+// type Falafel = "bread"
+
+type Kebab = NonNullable<"yummy" | null | undefined>;
+// type Kebab = "yummy"
+
+// *** Parameters<Type>
+type T1 = Parameters<(s: Array<string>, c: Array<number>) => Promise<void>>;
+// type T1 = [s: string[], c: number[]]
+```
+
+### `ReturnType<Type>`
+
+```ts
+const helloDave = (x: number, y: number) => {
+  return x + y;
+};
+
+type helloDaveT = ReturnType<typeof helloDave>;
+// type helloDaveT = number
+
+type imSorryDave = ReturnType<() => Promise<void>>;
+// type imSorryDave = Promise<void>
+
+interface User {
+  length: number;
+}
+
+type U = ReturnType<<T extends User, User extends Array<string>>() => T>;
+// type U = string[]
 ```
 
 ## Generic type variables
